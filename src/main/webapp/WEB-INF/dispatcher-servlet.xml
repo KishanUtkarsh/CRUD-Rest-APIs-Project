@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+
+
+
+	<!-- Configuring controller packages -->
+	<context:component-scan
+		base-package="productcrud" />
+
+	<!-- Configuring View Resolver -->
+	<bean name="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+
+		<!-- prefix is to define the folder of the views (.jsp or .html etc pages) -->
+		<property name="prefix">
+			<value>/WEB-INF/views/</value>
+		</property>
+		<!-- suffix is to define the type of the pages (.jsp .html etc) -->
+		<property name="suffix">
+			<value>.jsp</value>
+		</property>
+	</bean>
+
+
+	<!-- hibernate configuration -->
+	<!-- This is for activation of the anotations -->
+
+	<bean
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+		name="dataSource">
+		<property name="driverClassName"
+			value="com.mysql.cj.jdbc.Driver" />
+		<property name="url"
+			value="jdbc:mysql://localhost:3306/springmvc" />
+		<property name="username" value="root" />
+		<property name="password" value="Kishan@M3153" />
+	</bean>
+
+	<bean
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
+		name="factory">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+		<property name="annotatedClasses">
+			<list>
+				<value>productcrud.entity.Product</value>
+			</list>
+		</property>
+
+	</bean>
+
+	<bean class="org.springframework.orm.hibernate5.HibernateTemplate"
+		name="hibernateTemplate">
+		<property name="sessionFactory" ref="factory" />
+	</bean>
+
+
+	<tx:annotation-driven proxy-target-class="true"
+		transaction-manager="transactionManager" />
+
+	<bean
+		class="org.springframework.orm.hibernate5.HibernateTransactionManager"
+		name="transactionManager">
+		<property name="sessionFactory" ref="factory" />
+	</bean>
+
+
+
+
+</beans>
